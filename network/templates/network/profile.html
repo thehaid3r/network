@@ -1,0 +1,86 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+
+<div class="container">
+  
+
+
+    <h1>{{prof.username}}</h1>
+    {% if request.user.username != prof.username %}
+    <a href="{% url 'follow' prof.username %}" class="btn btn-primary">{{result}}</a>
+
+    {% endif %}
+    <div class="following">
+        <div class="  ">
+            <h3>following: {{total_following.count}}</h3>
+            <h3>followers: {{total_followers.count}}</h3>
+        </div>
+
+
+    </div>
+    <div id="posts">
+        {% for post in page_obj %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'profile' post.username %}">{{post.username}}</a></h5>
+                {% if request.user.id == post.user_id %}
+                <a href="#" class="btn btn-primary" id="edit_link_{{post.id}}" data-id="{{post.id}}"
+                    data-toggle="modal">Edit</a>
+                {% endif %}
+                <p class="card-text" id="post_text_{{ post.id }}" data-id="{{ post.id }}"> {{ post.content }}</p>
+                <form action="#" method="POST" id="edit_form_{{post.id}}" data-id="{{post.id}}" style="display: none">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ editform.id_post_edit_text }}
+                    </div>
+
+                    <div id="post_text_alert_{{post.id}}">
+                    </div>
+                    <div id="div_buttons">
+                        <button type="button" data-id="{{post.id}}" id="btn_close_{{post.id}}" class="btn btn-secondary"
+                            data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btnSave">Save changes</button>
+                    </div>
+                </form>
+                <p class="card-text"><small class="text-muted">{{post.date_posted}}</small></p>
+                <div class=" d-flex">
+                    <a class="btn mt-2  " id="like_{{ post.id }}  " data-id="{{post.id}}">❤</a>
+                <p  class="likes"id="like_count_{{post.id}}" data-id="{{post.id}}">{{post.likes.count}}</p>
+                </div>
+            </div>
+        </div>
+
+
+        {% endfor %}
+    </div>
+    {% if page_obj %}
+    <nav aria-label="Page navigation example">
+
+        <ul class="pagination justify-content-center">
+
+
+
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">&laquo;1</a></li>
+
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+
+
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+
+            {% endif %}
+
+
+        </ul>
+        <span class="justify-content-center d-flex">
+            <h6 class="text-primary"> Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</h6>
+        </span>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

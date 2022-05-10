@@ -1,0 +1,9 @@
+.following{
+    width:20%;
+}
+.likes{
+    position: absolute;
+    left:85px;
+    bottom:10px;
+
+}
